@@ -5,7 +5,13 @@ A collection of utilities for our libraries to prevent us from writing the same 
 ## Installation
 
 ```bash
-cargo add --git https://github.com/LiterateInk/Utilities utilities
+cargo add --git https://github.com/LiterateInk/Utilities
+```
+
+...or add it manually to your `Cargo.toml`
+```toml
+[dependencies]
+utilities = { git = "https://github.com/LiterateInk/Utilities" }
 ```
 
 ## Usage

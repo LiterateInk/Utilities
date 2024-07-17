@@ -1,13 +1,9 @@
 {
   "name": "@literate.ink/utilities",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "A general package containing utilities for helping building our libraries.",
   "private": false,
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "release": "release-it",
     "build": "tsup",
     "lint": "tsc"
   },
@@ -33,32 +29,9 @@
       }
     }
   },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release v${version}",
-      "tagAnnotation": "Release v${version}",
-      "tagName": "js-v${version}"
-    },
-    "github": {
-      "release": true,
-      "draft": false,
-      "releaseName": "js v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "hooks": {
-      "before:init": "pnpm lint",
-      "after:bump": "pnpm build"
-    }
-  },
   "devDependencies": {
-    "release-it": "^17.5.0",
     "terser": "^5.31.2",
     "tsup": "^8.1.0",
     "typescript": "^5.5.3"
-  },
-  "engines": {
-    "node": ">=16"
   }
 }

@@ -1,0 +1,40 @@
+name: Publish on NPM
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'npm/**'
+
+jobs:
+  publish:
+    runs-on: 'ubuntu-latest'
+    
+    permissions:
+      contents: read
+      id-token: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: 'pnpm'
+          node-version: 20
+          registry-url: 'https://registry.npmjs.com'
+
+      - name: Bump package version
+        run: |
+          sed -i "s/1.0.0/1.0.0-${GITHUB_RUN_ID}.${GITHUB_RUN_ATTEMPT}/" "package.json"
+      
+      - name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd npm && pnpm install && pnpm build
+          npm publish --provenance --access public

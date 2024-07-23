@@ -1,23 +1,21 @@
-# `utilities`
+# LiterateInk: `utilities`
 
-A collection of utilities for our libraries to prevent us from writing the same code again and again in multiple repositories (that finally gets out of sync).
+A collection of utilities for our libraries to prevent us from writing the same code again and again in multiple repositories that finally gets out of sync.
 
 ## Installation
 
-```bash
-cargo add --git https://github.com/LiterateInk/Utilities
-```
-
-...or add it manually to your `Cargo.toml`
 ```toml
 [dependencies]
-utilities = { git = "https://github.com/LiterateInk/Utilities" }
+literateink-utilities = { git = "https://github.com/LiterateInk/Utilities" }
+# ...and if needed
+literateink-utilities-macros = { git = "https://github.com/LiterateInk/Utilities" }
 ```
 
 ## Usage
 
 ```rust
-use utilities::{ ... }
+use literateink_utilities::{ ... }
+use literateink_utilities_macros::{ ... }
 ```
 
 ## Documentation

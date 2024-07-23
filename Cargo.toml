@@ -1,13 +1,23 @@
+[workspace]
+resolver = "2"
+members = ["macros"]
+
+[workspace.package]
+license = "MIT"
+version = "1.1.0"
+
 [package]
-name = "utilities"
-version = "1.0.0"
+name = "literateink-utilities"
+version.workspace = true
 authors = ["Mikkel ALMONTE--RINGAUD <mikkel@milescode.dev> (https://github.com/Vexcited)"]
-description = "A general package containing utilities for helping building our libraries."
+readme = "README.md"
+repository = "https://github.com/LiterateInk/Utilities"
+description = "A general crate containing utilities for helping building our libraries."
 homepage = "https://docs.literate.ink/utilities"
 edition = "2021"
-repository = "https://github.com/LiterateInk/Utilities"
-rust-version = "1.56"
-license = "MIT"
+license.workspace = true
+
+
 
 [dependencies]
 futures = "0.3.17"
@@ -17,3 +27,4 @@ serde-wasm-bindgen = "0.4"
 wasm-bindgen = "0.2.86"
 wasm-bindgen-futures = "0.4.36"
 js-sys = "0.3.63"
+

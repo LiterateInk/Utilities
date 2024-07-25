@@ -46,8 +46,8 @@ const WASM = await readFile(pathFromPKG(`${pkg.name}_bg.wasm`));
   // Add default fetcher to the fetcher parameter (to make it optional)
   content = content.replace(
     // Since fetcher parameter is always the last, we can match it that way. 
-    /, fetcher\) {/g,
-    `, fetcher = utils__defaultFetcher) {`
+    /fetcher\) {/g,
+    `fetcher = utils__defaultFetcher) {`
   );
   console.info("[JS]: Added default fetcher to 'fetcher' parameters.");
 

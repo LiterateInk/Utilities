@@ -166,8 +166,8 @@ exports.load_async = async function () {
 
   // Make every fetcher optional by adding a default fetcher (and the type)
   content = content.replace(
-    /, fetcher: Function\)/g,
-    `, fetcher?: Fetcher)`
+    /fetcher: Function\)/g,
+    `fetcher?: Fetcher)`
   );
   console.info("[D.TS]: Typed 'fetcher' and made it optional.");
 

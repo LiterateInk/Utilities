@@ -5,7 +5,7 @@ export interface Request {
   content: string | undefined
   /** Headers that should be appended to the request. */
   headers: Array<[string, string]>
-  // TODO: add in rust redirect: "follow" | "manual"
+  redirect: "follow" | "manual"
 }
 
 export interface Response {
@@ -31,6 +31,7 @@ export const defaultFetcher = async (req: Request): Promise<Response> => {
 
   const response = await fetch(req.url, {
     headers: request_headers,
+    redirect: req.redirect,
     method: req.method,
     body: req.content
   });

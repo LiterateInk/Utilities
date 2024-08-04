@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+title: Utilities
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Mikkel
+    family-names: ALMONTE--RINGAUD
+    email: vexitofficial@gmail.com
+repository-code: 'https://github.com/LiterateInk/Utilities'
+url: 'https://docs.literate.ink/utilities'
+abstract: >-
+  A collection of utilities for our libraries.
+keywords:
+  - utilities
+license: MIT

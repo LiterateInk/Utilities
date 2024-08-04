@@ -10,10 +10,7 @@
   "files": [
     "dist"
   ],
-  "bin": {
-    "wasm-build": "./dist/build.mjs"
-  },
-  "author": "Mikkel ALMONTE--RINGAUD <mikkel@milescode.dev> (https://github.com/Vexcited)",
+  "author": "LiterateInk <contact@literate.ink> (https://github.com/LiterateInk)",
   "repository": "https://github.com/LiterateInk/Utilities",
   "homepage": "https://docs.literate.ink/utilities",
   "bugs": {
@@ -33,11 +30,9 @@
     }
   },
   "devDependencies": {
-    "@types/node": "^20.14.12",
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.3"
-  },
-  "dependencies": {
-    "terser": "^5.31.3"
+    "@types/node": "^20.14.14",
+    "terser": "^5.31.3",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
   }
 }

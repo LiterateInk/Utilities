@@ -28,12 +28,25 @@ export const getHeaderFromResponse = (response: Response, item: string): string 
 
 export interface Request {
   url: string
-  method: string
-  /** Body of the request of type given in the "Content-Type" header. */
-  content: string | undefined
+  
+  /**
+   * @default "GET"
+   */
+  method?: string
+
+  /**
+   * Body of the request.
+   * @default undefined
+   */
+  content?: string
+  
   /** Headers that should be appended to the request. */
-  headers: Record<string, string> | Headers
-  redirect: "follow" | "manual"
+  headers?: Record<string, string> | Headers
+  
+  /**
+   * @default "follow"
+   */
+  redirect?: "follow" | "manual"
 }
 
 export interface Response {

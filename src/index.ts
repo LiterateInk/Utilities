@@ -42,12 +42,12 @@ export const setHeaderToRequest = (request: Request, key: string, value: string)
 }
 
 export interface Request {
-  url: string
+  url: URL
   
   /**
    * @default "GET"
    */
-  method?: string
+  method?: "GET" | "POST"
 
   /**
    * Body of the request.
@@ -55,7 +55,10 @@ export interface Request {
    */
   content?: string
   
-  /** Headers that should be appended to the request. */
+  /**
+   * Headers that should be appended to the request.
+   * @default {}
+   */
   headers?: Record<string, string> | Headers
   
   /**
@@ -80,10 +83,10 @@ export type Fetcher = (req: Request) => Promise<Response>;
  * and probably more environments.
  */
 export const defaultFetcher = async (req: Request): Promise<Response> => {
-  const response = await fetch(req.url, {
-    redirect: req.redirect,
-    headers: req.headers,
-    method: req.method,
+  const response = await fetch(req.url.href, {
+    redirect: req.redirect ?? "follow",
+    headers: req.headers ?? {},
+    method: req.method ?? "GET",
     body: req.content
   });
 

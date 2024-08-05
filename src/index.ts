@@ -21,10 +21,25 @@ export const getCookiesFromResponse = (response: Response): string[] => {
 export const getHeaderFromResponse = (response: Response, item: string): string | null => {
   const headers = response.headers;
 
-  return typeof headers.get === "function"
+  return isHeader(headers)
     ? headers.get(item)
     : (headers as Record<string, string>)[item];
 };
+
+const isHeader = (headers: Response["headers"]): headers is Headers => {
+  return typeof headers.get === "function";
+}
+
+export const setHeaderToRequest = (request: Request, key: string, value: string): void => {
+  if (!request.headers) request.headers = {};
+  
+  if (isHeader(request.headers)) {
+    request.headers.set(key, value);
+  }
+  else {
+    request.headers[key] = value;
+  }
+}
 
 export interface Request {
   url: string

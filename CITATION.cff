@@ -5,9 +5,9 @@ message: >-
   metadata from this file.
 type: software
 authors:
-  - given-names: Mikkel
-    family-names: ALMONTE--RINGAUD
-    email: vexitofficial@gmail.com
+  - name: LiterateInk
+    website: "https://literate.ink"
+    email: contact@literate.ink
 repository-code: 'https://github.com/LiterateInk/Utilities'
 url: 'https://docs.literate.ink/utilities'
 repository-artifact: 'https://www.npmjs.com/package/@literate.ink/utilities'

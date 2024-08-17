@@ -21,19 +21,28 @@ export const getCookiesFromResponse = (response: Response): string[] => {
 export const getHeaderFromResponse = (response: Response, item: string): string | null => {
   const headers = response.headers;
 
-  return isHeader(headers)
+  return isHeaderInstance(headers)
     ? headers.get(item)
     : (headers as Record<string, string>)[item];
 };
 
-const isHeader = (headers: Response["headers"]): headers is Headers => {
+const isHeaderInstance = (headers: Response["headers"]): headers is Headers => {
   return typeof headers.get === "function";
 }
 
+export const setCookiesArrayToRequest = (request: Request, cookies: string[]): void => {
+  setHeaderToRequest(request, "Cookie", cookies.join("; "))
+}
+
+export const setCookiesObjectToRequest = (request: Request, cookies: Record<string, string>): void => {
+  const array = Object.entries(cookies).map(([key, value])=>`${key}=${value}`)
+  setCookiesArrayToRequest(request, array)
+}
+
 export const setHeaderToRequest = (request: Request, key: string, value: string): void => {
-  if (!request.headers) request.headers = {};
+  request.headers ||= {};
   
-  if (isHeader(request.headers)) {
+  if (isHeaderInstance(request.headers)) {
     request.headers.set(key, value);
   }
   else {

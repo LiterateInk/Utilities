@@ -6,6 +6,18 @@ export const findValueBetween = (plain: string, start: string, end: string): str
   return plain.slice(startIndex, endIndex);
 };
 
+/**
+ * Special typing for React Native.
+ */
+export type ReactNativeFileFromURI = {
+  uri: string
+  name: string
+  type: string
+  size: number
+};
+
+export type FormDataFile = Blob | File | Buffer | ArrayBuffer | Uint8Array | ReactNativeFileFromURI;
+
 interface HeadersLike {
   get (key: string): string | null
 };

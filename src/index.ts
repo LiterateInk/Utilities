@@ -1,8 +1,13 @@
 import { splitCookiesString } from "set-cookie-parser";
 
-export const findValueBetween = (plain: string, start: string, end: string): string => {
-  const startIndex = plain.indexOf(start) + start.length;
+export const findValueBetween = (plain: string, start: string, end: string): string | null => {
+  let startIndex = plain.indexOf(start);
+  if (startIndex === -1) return null;
+  startIndex = startIndex + start.length;
+  
   const endIndex = plain.indexOf(end, startIndex);
+  if (endIndex === -1) return null;
+  
   return plain.slice(startIndex, endIndex);
 };
 

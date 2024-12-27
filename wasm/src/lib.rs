@@ -7,7 +7,7 @@ use quote::quote;
 /// This macro adds the `#[wasm_bindgen]` attribute to the function
 /// and adds a `fetcher: JsValue` parameter to the function signature.
 #[proc_macro_attribute]
-pub fn method(_args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn api_method(_args: TokenStream, input: TokenStream) -> TokenStream {
   let mut input = parse_macro_input!(input as ItemFn);
   let vis = &input.vis;
   let sig = &mut input.sig;
@@ -17,7 +17,7 @@ pub fn method(_args: TokenStream, input: TokenStream) -> TokenStream {
   let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen]);
   attrs.push(wasm_bindgen_attr);
 
-  let fetcher_param: FnArg = parse_quote!(something_else: String);
+  let fetcher_param: FnArg = parse_quote!(fetcher: String);
   sig.inputs.push(fetcher_param);
 
   let output = quote! {

@@ -5,7 +5,7 @@ use proc_macro::TokenStream;
 use quote::quote;
 
 /// This macro adds the `#[wasm_bindgen]` attribute to the function
-/// and adds a `fetcher: JsValue` parameter to the function signature.
+/// and adds a `fetcher: js_sys::Function` parameter to the function signature.
 #[proc_macro_attribute]
 pub fn api_method(_args: TokenStream, input: TokenStream) -> TokenStream {
   let mut input = parse_macro_input!(input as ItemFn);

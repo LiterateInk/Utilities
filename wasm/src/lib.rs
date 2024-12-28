@@ -29,3 +29,15 @@ pub fn api_method(_args: TokenStream, input: TokenStream) -> TokenStream {
 
   TokenStream::from(output)
 }
+
+#[proc_macro]
+pub fn setup_allocator(_input: TokenStream) -> TokenStream {
+  let expanded = quote! {
+    extern crate wee_alloc;
+
+    #[global_allocator]
+    static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+  };
+
+  TokenStream::from(expanded)
+}

@@ -1,8 +1,8 @@
 use std::str::FromStr;
-
-use http::HeaderName;
 use serde::{Serialize, Deserialize, Serializer};
-pub use http::{Method, HeaderMap};
+
+pub use http::{Method, HeaderName, HeaderMap};
+pub use fetcher_macros::fetch;
 pub use url::Url;
 
 #[cfg(not(target_arch = "wasm32"))]

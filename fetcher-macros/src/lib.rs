@@ -9,11 +9,14 @@ pub fn fetch(input: TokenStream) -> TokenStream {
   let request: Expr = parse_macro_input!(input as Expr);
 
   let expanded = quote! {
-    #[cfg(target_arch = "wasm32")]
-    let response = fetcher::fetch(#request, fetcher).await;
+    {
+      #[cfg(target_arch = "wasm32")]
+      let response = fetcher::fetch(#request, fetcher).await;
+      #[cfg(not(target_arch = "wasm32"))]
+      let response = fetcher::fetch(#request).await;
 
-    #[cfg(not(target_arch = "wasm32"))]
-    let response = fetcher::fetch(#request).await;
+      response
+    }
   };
 
   TokenStream::from(expanded)

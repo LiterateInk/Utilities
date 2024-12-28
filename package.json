@@ -1,0 +1,37 @@
+{
+  "name": "@literate.ink/utilities",
+  "version": "1.0.0",
+  "description": "A collection of utilities for our libraries.",
+  "repository": "https://github.com/LiterateInk/Utilities",
+  "sideEffects": false,
+  "exports": {
+    "./fetcher": {
+      "import": {
+        "types": "./dist/fetcher/index.d.mts",
+        "default": "./dist/fetcher/index.mjs"
+      },
+      "require": {
+        "types": "./dist/fetcher/index.d.ts",
+        "default": "./dist/fetcher/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "lint": "tsc"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "LiterateInk <contact@literate.ink> (https://literate.ink)",
+  "homepage": "https://docs.literate.ink/utilities",
+  "bugs": {
+    "url": "https://github.com/LiterateInk/Utilities/issues"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "terser": "^5.31.3",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
+  }
+}

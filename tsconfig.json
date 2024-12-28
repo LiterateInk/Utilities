@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+
+  "include": ["fetcher/src/index.ts", "tsup.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

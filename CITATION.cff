@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: Utilities
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - name: LiterateInk
+    website: "https://literate.ink"
+    email: contact@literate.ink
+repository-code: 'https://github.com/LiterateInk/Utilities'
+url: 'https://docs.literate.ink/utilities'
+abstract: >-
+  A collection of utilities for our libraries.
+license: MIT

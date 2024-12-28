@@ -17,7 +17,7 @@ pub fn api_method(_args: TokenStream, input: TokenStream) -> TokenStream {
   let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen]);
   attrs.push(wasm_bindgen_attr);
 
-  let fetcher_param: FnArg = parse_quote!(fetcher: String);
+  let fetcher_param: FnArg = parse_quote!(fetcher: js_sys::Function);
   sig.inputs.push(fetcher_param);
 
   let output = quote! {

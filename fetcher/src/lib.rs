@@ -66,7 +66,7 @@ impl Serialize for Request {
   fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
     use serde::ser::SerializeStruct;
 
-    let mut state = serializer.serialize_struct("Request", 2)?;
+    let mut state = serializer.serialize_struct("Request", 3)?;
     state.serialize_field("url", &self.url.as_str())?;
     state.serialize_field("method", &self.method.as_str())?;
 

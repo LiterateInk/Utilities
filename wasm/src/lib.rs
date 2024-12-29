@@ -1,20 +1,74 @@
 extern crate proc_macro;
 
-use syn::{parse_macro_input, ItemFn, Attribute, FnArg, parse_quote, DeriveInput};
+use syn::{parse_macro_input, parse_quote, Attribute, DeriveInput, FnArg, Ident, ItemFn};
+use syn::parse::{Parse, ParseStream, Result};
 use proc_macro::TokenStream;
 use quote::quote;
 
+struct ApiMethodArgs {
+  js_name: Option<String>,
+}
+
+impl Parse for ApiMethodArgs {
+  fn parse(input: ParseStream) -> Result<Self> {
+    if input.is_empty() {
+      return Ok(ApiMethodArgs { js_name: None });
+    }
+
+    let content;
+    syn::parenthesized!(content in input);
+
+    if content.is_empty() {
+      return Ok(ApiMethodArgs { js_name: None });
+    }
+
+    let js_name = if let Ok(ident) = content.parse::<Ident>() {
+      ident.to_string()
+    }
+    else {
+      return Err(content.error("Expected identifier"));
+    };
+
+    Ok(ApiMethodArgs { js_name: Some(js_name) })
+  }
+}
+
 /// This macro adds the `#[wasm_bindgen]` attribute to the function
 /// and adds a `fetcher: js_sys::Function` parameter to the function signature.
+///
+/// ## Usages
+///
+/// ```rust
+/// // the method will be called `retrieveCAS` in the generated bindings
+/// #[cfg_attr(target_arch = "wasm32", wasm::api_method(retrieveCAS))]
+/// pub async fn retrieve_cas() -> Result<String, Error> {
+///   // a `fetcher` variable is available
+///   // if the target architecture is `wasm32`
+/// }
+///
+/// // the method will be still called `update` in the generated bindings
+/// #[cfg_attr(target_arch = "wasm32", wasm::api_method)]
+/// pub async fn update() -> Result<String, Error> {
+///   // a `fetcher` variable is available
+///   // if the target architecture is `wasm32`
+/// }
+/// ```
 #[proc_macro_attribute]
-pub fn api_method(_args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn api_method(args: TokenStream, input: TokenStream) -> TokenStream {
+  let args = parse_macro_input!(args with ApiMethodArgs::parse);
   let mut input = parse_macro_input!(input as ItemFn);
   let vis = &input.vis;
   let sig = &mut input.sig;
   let block = &input.block;
   let attrs = &mut input.attrs;
 
-  let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen]);
+  let wasm_bindgen_attr: Attribute = if let Some(name) = args.js_name {
+    parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen(js_name = #name)])
+  }
+  else {
+    parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen])
+  };
+
   attrs.push(wasm_bindgen_attr);
 
   let fetcher_param: FnArg = parse_quote!(fetcher: js_sys::Function);

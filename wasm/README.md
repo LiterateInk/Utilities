@@ -23,12 +23,21 @@ Will use the `wee_alloc` crate to set up a global allocator for the `wasm32` tar
 
 ### `api_method`
 
-```rust
-#[cfg_attr(target_arch = "wasm32", wasm::api_method)]
-pub async fn fetch_github(something: String) -> String {
-  "hello world".to_string()
-}
-```
-
 A `fetcher` parameter is automatically added to the function signature.
 See the [`fetcher` module](../fetcher) for more information.
+
+```rust
+// the method will be called `fetchGitHub` in the generated bindings
+#[cfg_attr(target_arch = "wasm32", wasm::api_method(fetchGitHub))]
+pub async fn fetch_github(something: String) -> String {
+  // a `fetcher` variable is available
+  // if the target architecture is `wasm32`
+}
+
+// the method will stille be called `update` in the generated bindings
+#[cfg_attr(target_arch = "wasm32", wasm::api_method)]
+pub async fn update(something: String) -> String {
+  // a `fetcher` variable is available
+  // if the target architecture is `wasm32`
+}
+```

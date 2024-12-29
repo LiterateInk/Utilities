@@ -1,6 +1,6 @@
 extern crate proc_macro;
 
-use syn::{parse_macro_input, ItemFn, Attribute, FnArg, parse_quote};
+use syn::{parse_macro_input, ItemFn, Attribute, FnArg, parse_quote, DeriveInput};
 use proc_macro::TokenStream;
 use quote::quote;
 
@@ -37,6 +37,22 @@ pub fn setup_allocator(_input: TokenStream) -> TokenStream {
 
     #[global_allocator]
     static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+  };
+
+  TokenStream::from(expanded)
+}
+
+#[proc_macro_derive(Error)]
+pub fn derive_wasm_error(input: TokenStream) -> TokenStream {
+  let input = parse_macro_input!(input as DeriveInput);
+  let name = &input.ident;
+
+  let expanded = quote! {
+    impl From<#name> for wasm_bindgen::JsValue {
+      fn from(error: #name) -> Self {
+        js_sys::Error::new(&error.to_string()).into()
+      }
+    }
   };
 
   TokenStream::from(expanded)

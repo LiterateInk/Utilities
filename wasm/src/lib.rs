@@ -15,21 +15,8 @@ impl Parse for ApiMethodArgs {
       return Ok(ApiMethodArgs { js_name: None });
     }
 
-    let content;
-    syn::parenthesized!(content in input);
-
-    if content.is_empty() {
-      return Ok(ApiMethodArgs { js_name: None });
-    }
-
-    let js_name = if let Ok(ident) = content.parse::<Ident>() {
-      ident.to_string()
-    }
-    else {
-      return Err(content.error("Expected identifier"));
-    };
-
-    Ok(ApiMethodArgs { js_name: Some(js_name) })
+    let ident = input.parse::<Ident>()?;
+    Ok(ApiMethodArgs { js_name: Some(ident.to_string()) })
   }
 }
 

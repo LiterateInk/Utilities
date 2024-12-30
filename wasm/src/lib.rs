@@ -10,7 +10,7 @@ use quote::quote;
 /// If applied to a function, it will also rename the
 /// name to camel case using `js_name`.
 ///
-/// # Usages
+/// ## Usages
 ///
 /// ```rust
 /// // The method will be called `retrieveCas` in the generated bindings.
@@ -28,6 +28,31 @@ use quote::quote;
 /// impl Session {
 ///   // ...
 /// }
+/// ```
+///
+/// ## Notes
+///
+/// In `impl`s, you can use the `#[wasm_bindgen]` attribute
+/// wherever you want since the one on the `impl` itself
+/// defines it directly.
+///
+/// ```rust
+/// #[wasm::export]
+/// impl Session {
+///   #[wasm_bindgen(constructor)]
+///   pub fn new () -> Self {
+///     // ...
+///   }
+///
+///  #[wasm_bindgen(getter = instanceUrl)]
+///  pub fn instance_url(&self) -> String {
+///    // ...
+///  }
+/// }
+/// ```
+///
+/// Sadly, we can't override those to make `wasm::getter` and
+/// `wasm::constructor` exist, but anyway, it's not a big deal.
 ///
 #[proc_macro_attribute]
 pub fn export(_args: TokenStream, input: TokenStream) -> TokenStream {

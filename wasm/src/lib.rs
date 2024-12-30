@@ -31,63 +31,65 @@ use quote::quote;
 ///
 #[proc_macro_attribute]
 pub fn export(_args: TokenStream, input: TokenStream) -> TokenStream {
-  // let input_clone = input.clone();
   let input = parse_macro_input!(input as syn::Item);
 
   match input {
-      syn::Item::Fn(mut input) => {
-        let vis = &input.vis;
-        let sig = &input.sig;
-        let block = &input.block;
-        let attrs = &mut input.attrs;
+    syn::Item::Fn(mut input) => {
+      let vis = &input.vis;
+      let sig = &input.sig;
 
-        let name = sig.ident.to_string();
-        let camel_case_name = name.to_case(Case::Camel);
+      let block = &input.block;
+      let attrs = &mut input.attrs;
 
-        let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen(js_name = #camel_case_name)]);
-        attrs.push(wasm_bindgen_attr);
+      let name = sig.ident.to_string();
+      let camel_case_name = name.to_case(Case::Camel);
 
-        let output = quote! {
-          #(#attrs)*
-          #vis #sig {
-            #block
-          }
-        };
+      let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen(js_name = #camel_case_name)]);
+      attrs.push(wasm_bindgen_attr);
 
-        TokenStream::from(output)
-      },
-      syn::Item::Struct(mut input) => {
-        let vis = &input.vis;
-        let ident = &input.ident;
-        let fields = &input.fields;
-        let attrs = &mut input.attrs;
+      let output = quote! {
+        #(#attrs)*
+        #vis #sig {
+          #block
+        }
+      };
 
-        let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen]);
-        attrs.push(wasm_bindgen_attr);
+      TokenStream::from(output)
+    },
+    syn::Item::Struct(mut input) => {
+      let vis = &input.vis;
+      let ident = &input.ident;
+      let fields = &input.fields;
+      let attrs = &mut input.attrs;
 
-        let output = quote! {
-          #(#attrs)*
-          #vis struct #ident {
-              #fields
-          }
-        };
+      let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen]);
+      attrs.push(wasm_bindgen_attr);
 
-        TokenStream::from(output)
-      },
-      syn::Item::Impl(mut input) => {
-        let attrs = &mut input.attrs;
+      let output = quote! {
+        #(#attrs)*
+        #vis struct #ident #fields
+      };
 
-        let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen]);
-        attrs.push(wasm_bindgen_attr);
+      TokenStream::from(output)
+    },
+    syn::Item::Impl(mut input) => {
+      let attrs = &mut input.attrs;
+      let self_ty = &input.self_ty;
+      let items = &input.items;
 
-        let output = quote! {
-          #(#attrs)*
-          impl #input
-        };
+      let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen]);
+      attrs.push(wasm_bindgen_attr);
 
-        TokenStream::from(output)
-      },
-      _ => panic!("Only functions, structs and impls are supported"),
+      let output = quote! {
+        #(#attrs)*
+        impl #self_ty {
+          #(#items)*
+        }
+      };
+
+      TokenStream::from(output)
+    },
+    _ => panic!("Only functions, structs and impls are supported"),
   }
 }
 

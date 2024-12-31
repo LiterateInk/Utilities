@@ -1,3 +1,5 @@
+use literateink_wasm as wasm;
+
 // the method will be renamed `retrieveCas` in the generated bindings
 #[wasm::export]
 pub fn retrieve_cas() {

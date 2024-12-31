@@ -31,9 +31,9 @@ pub fn fetch(input: TokenStream) -> TokenStream {
       quote! {
         {
           #[cfg(target_arch = "wasm32")]
-          let response = literateink_fetcher::fetch(#req, &fetcher).await;
+          let response = fetcher::fetch(#req, &fetcher).await;
           #[cfg(not(target_arch = "wasm32"))]
-          let response = literateink_fetcher::fetch(#req).await;
+          let response = fetcher::fetch(#req).await;
 
           response
         }
@@ -45,9 +45,9 @@ pub fn fetch(input: TokenStream) -> TokenStream {
       quote! {
         {
           #[cfg(target_arch = "wasm32")]
-          let response = literateink_fetcher::fetch(#req, #fetcher_expr).await;
+          let response = fetcher::fetch(#req, #fetcher_expr).await;
           #[cfg(not(target_arch = "wasm32"))]
-          let response = literateink_fetcher::fetch(#req).await;
+          let response = fetcher::fetch(#req).await;
 
           response
         }

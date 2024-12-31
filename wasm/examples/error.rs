@@ -1,3 +1,5 @@
+use literateink_wasm as wasm;
+
 #[derive(thiserror::Error, Debug, wasm::Error)]
 pub enum Error {
   #[error("no redirection was made, make sure the instance URL is correct")]

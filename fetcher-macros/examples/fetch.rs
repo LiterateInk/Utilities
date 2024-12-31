@@ -1,13 +1,13 @@
-use fetcher::{fetch, Request};
+use fetcher::{fetch, Request, Method};
 
 #[tokio::main]
 async fn main () {
   let request = Request {
     url: "https://example.com".parse().unwrap(),
-    method: fetcher::Method::GET,
+    method: Method::GET,
     headers: Default::default(),
     body: None,
-    follow: None,
+    follow: false,
   };
 
   let response = fetch!(request);

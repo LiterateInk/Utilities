@@ -12,15 +12,17 @@ pub fn update() {
 pub struct Session {
   instance_url: String,
   php_sess_id: String,
+  fetcher: js_sys::Function,
 }
 
 #[wasm::export]
 impl Session {
   #[wasm_bindgen(constructor)]
-  pub fn new(instance_url: String, php_sess_id: String) -> Self {
+  pub fn new(instance_url: String, php_sess_id: String, fetcher: js_sys::Function) -> Self {
     Self {
       instance_url,
       php_sess_id,
+      fetcher,
     }
   }
 
@@ -32,6 +34,12 @@ impl Session {
   #[wasm_bindgen(getter)]
   pub fn php_sess_id(&self) -> String {
     self.php_sess_id.clone()
+  }
+}
+
+impl Session {
+  pub fn fetcher (&self) -> &js_sys::Function {
+    &self.fetcher
   }
 }
 

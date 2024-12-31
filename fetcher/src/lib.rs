@@ -7,13 +7,14 @@ pub use url::Url;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub async fn fetch (request: Request) -> Response {
-  use reqwest::Client;
+  use reqwest::{Client, redirect::Policy};
 
-  let client = if request.follow == Some(false) {
+  let client = if !request.follow {
     Client::builder()
-      .redirect(reqwest::redirect::Policy::none())
+      .redirect(Policy::none())
       .build().unwrap()
-  } else {
+  }
+  else {
     Client::new()
   };
 
@@ -42,7 +43,7 @@ pub async fn fetch (request: Request) -> Response {
 }
 
 #[cfg(target_arch = "wasm32")]
-pub async fn fetch (request: Request, fetcher: js_sys::Function) -> Response {
+pub async fn fetch (request: Request, fetcher: &js_sys::Function) -> Response {
   use wasm_bindgen_futures::JsFuture;
   use wasm_bindgen::JsValue;
   use js_sys::Promise;
@@ -59,14 +60,14 @@ pub struct Request {
   pub body: Option<String>,
   pub headers: HeaderMap,
   /// Whether we should follow redirects or not.
-  pub follow: Option<bool>,
+  pub follow: bool,
 }
 
 impl Serialize for Request {
   fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
     use serde::ser::SerializeStruct;
 
-    let mut state = serializer.serialize_struct("Request", 3)?;
+    let mut state = serializer.serialize_struct("Request", 4)?;
     state.serialize_field("url", &self.url.as_str())?;
     state.serialize_field("method", &self.method.as_str())?;
 
@@ -80,9 +81,7 @@ impl Serialize for Request {
       state.serialize_field("body", body)?;
     }
 
-    if let Some(follow) = self.follow {
-      state.serialize_field("follow", &follow)?;
-    }
+    state.serialize_field("follow", &self.follow)?;
 
     state.end()
   }

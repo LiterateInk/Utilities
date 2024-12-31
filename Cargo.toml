@@ -4,3 +4,10 @@ members = ["wasm", "fetcher", "fetcher-macros"]
 
 [workspace.package]
 version = "0.1.0"
+description = "Utilities for the LiterateInk crates."
+homepage = "https://docs.literate.ink/utilities"
+license = "MIT"
+repository = "https://github.com/LiterateInk/Utilities"
+
+[workspace.metadata.release]
+pre-release-commit-message = "chore: bump rust versions"

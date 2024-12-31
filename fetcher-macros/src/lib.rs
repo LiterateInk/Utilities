@@ -9,6 +9,7 @@ use quote::quote;
 ///
 /// ```rust
 /// // will use the variable `fetcher` on wasm32 target
+/// // `fetcher` type is `js_sys::Function`
 /// #[cfg_attr(target_arch = "wasm32", wasm::append_fetcher)]
 /// async fn something () {
 ///   let response = fetch!(request);
@@ -16,7 +17,7 @@ use quote::quote;
 ///
 /// async fn something (session: &Session) {
 ///   // will use the `session.fetcher()` method on wasm32 target
-///   // return type of `session.fetcher()` is `&js_sys::Function`
+///   // return type the method is `&js_sys::Function`
 ///   let response = fetch!(request, session.fetcher());
 /// }
 /// ```
@@ -30,9 +31,9 @@ pub fn fetch(input: TokenStream) -> TokenStream {
       quote! {
         {
           #[cfg(target_arch = "wasm32")]
-          let response = fetcher::fetch(#req, &fetcher).await;
+          let response = literateink_fetcher::fetch(#req, &fetcher).await;
           #[cfg(not(target_arch = "wasm32"))]
-          let response = fetcher::fetch(#req).await;
+          let response = literateink_fetcher::fetch(#req).await;
 
           response
         }
@@ -44,9 +45,9 @@ pub fn fetch(input: TokenStream) -> TokenStream {
       quote! {
         {
           #[cfg(target_arch = "wasm32")]
-          let response = fetcher::fetch(#req, #fetcher_expr).await;
+          let response = literateink_fetcher::fetch(#req, #fetcher_expr).await;
           #[cfg(not(target_arch = "wasm32"))]
-          let response = fetcher::fetch(#req).await;
+          let response = literateink_fetcher::fetch(#req).await;
 
           response
         }

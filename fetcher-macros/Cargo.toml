@@ -1,5 +1,5 @@
 [package]
-name = "fetcher-macros"
+name = "literateink-fetcher-macros"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,7 +9,7 @@ quote = "1.0"
 proc-macro2 = "1.0"
 
 [dev-dependencies]
-fetcher = { path = "../fetcher" }
+fetcher = { package = "literateink-fetcher", version = "0.1", path = "../fetcher" }
 tokio = { version = "1.0", features = ["full"] }
 
 [lib]

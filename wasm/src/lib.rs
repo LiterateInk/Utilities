@@ -173,18 +173,6 @@ pub fn append_fetcher(_args: TokenStream, input: TokenStream) -> TokenStream {
   TokenStream::from(output)
 }
 
-#[proc_macro]
-pub fn setup_allocator(_input: TokenStream) -> TokenStream {
-  let expanded = quote! {
-    extern crate wee_alloc;
-
-    #[global_allocator]
-    static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-  };
-
-  TokenStream::from(expanded)
-}
-
 #[proc_macro_derive(Error)]
 pub fn derive_wasm_error(input: TokenStream) -> TokenStream {
   let input = parse_macro_input!(input as DeriveInput);

@@ -9,6 +9,13 @@ pub fn update() {
 }
 
 #[wasm::export]
+pub enum SomeEnum {
+  A,
+  B,
+  C,
+}
+
+#[wasm::export]
 pub struct Session {
   instance_url: String,
   php_sess_id: String,

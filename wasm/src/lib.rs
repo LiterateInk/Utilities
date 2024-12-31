@@ -28,6 +28,11 @@ use quote::quote;
 /// impl Session {
 ///   // ...
 /// }
+///
+/// #[cfg_attr(target_arch = "wasm32", wasm::export)]
+/// pub enum SomeEnum {
+///   // ...
+/// }
 /// ```
 ///
 /// ## Notes
@@ -97,6 +102,24 @@ pub fn export(_args: TokenStream, input: TokenStream) -> TokenStream {
 
       TokenStream::from(output)
     },
+    syn::Item::Enum(mut input) => {
+      let vis = &input.vis;
+      let ident = &input.ident;
+      let variants = &input.variants;
+      let attrs = &mut input.attrs;
+
+      let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen]);
+      attrs.push(wasm_bindgen_attr);
+
+      let output = quote! {
+        #(#attrs)*
+        #vis enum #ident {
+          #variants
+        }
+      };
+
+      TokenStream::from(output)
+    },
     syn::Item::Impl(mut input) => {
       let attrs = &mut input.attrs;
       let self_ty = &input.self_ty;
@@ -114,7 +137,7 @@ pub fn export(_args: TokenStream, input: TokenStream) -> TokenStream {
 
       TokenStream::from(output)
     },
-    _ => panic!("Only functions, structs and impls are supported"),
+    _ => panic!("Only functions, structs, enums and impls are supported"),
   }
 }
 

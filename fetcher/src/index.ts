@@ -66,7 +66,7 @@ export const defaultFetcher: Fetcher = async (req) => {
   const status = response.status; // should be `u16`
   const bytes = await response.arrayBuffer();
 
-  // Sicne Headers.entries() is not available in all environments
+  // Since `Headers.entries()` is not available in all environments
   // we have to do this dirty hack to get all headers...
   headers = (isHeaders(response.headers)
     // Available in this environment

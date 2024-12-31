@@ -8,7 +8,7 @@ on:
 
 jobs:
   publish-js:
-    runs-on: 'ubuntu-latest'
+    runs-on: ubuntu-latest
 
     permissions:
       contents: read
@@ -40,7 +40,7 @@ jobs:
           npm publish --provenance --access public
 
   publish-rust:
-    runs-on: 'ubuntu-latest'
+    runs-on: ubuntu-latest
 
     permissions:
       contents: write

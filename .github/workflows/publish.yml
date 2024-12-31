@@ -1,4 +1,4 @@
-name: Publish on NPM
+name: Publish on NPM and crates.io
 
 on:
   workflow_dispatch:
@@ -38,11 +38,12 @@ jobs:
         run: |
           pnpm install && pnpm build
           npm publish --provenance --access public
+
   publish-rust:
     runs-on: 'ubuntu-latest'
 
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - uses: actions/checkout@v4

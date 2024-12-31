@@ -59,4 +59,8 @@ jobs:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_TOKEN }}
         run: |
           cargo install cargo-release
+
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
           cargo release patch --execute --no-tag --no-confirm

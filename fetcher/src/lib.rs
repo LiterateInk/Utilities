@@ -74,7 +74,8 @@ pub async fn fetch(request: Request, fetcher: &js_sys::Function) -> Result<Respo
     FetcherError(
       err
         .as_string()
-        .unwrap_or("error calling the fetcher".into()),
+        // try to get the error message from the error object
+        .unwrap_or_else(|| js_sys::Error::from(err).to_string().into()),
     )
   })?);
 
@@ -82,7 +83,8 @@ pub async fn fetch(request: Request, fetcher: &js_sys::Function) -> Result<Respo
     FetcherError(
       err
         .as_string()
-        .unwrap_or("error during the fetcher promise".into()),
+        // try to get the error message from the error object
+        .unwrap_or_else(|| js_sys::Error::from(err).to_string().into()),
     )
   })?;
 

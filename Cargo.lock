@@ -564,7 +564,7 @@ checksum = "4ee93343901ab17bd981295f2cf0026d4ad018c7c31ba84549a4ddbb47a45104"
 
 [[package]]
 name = "literateink-fetcher"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "http",
  "js-sys",
@@ -579,7 +579,7 @@ dependencies = [
 
 [[package]]
 name = "literateink-wasm"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "convert_case",
  "js-sys",

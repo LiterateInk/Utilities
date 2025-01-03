@@ -1,19 +1,14 @@
 #[cfg(target_arch = "wasm32")]
 use serde::{Deserialize, Serialize, Serializer};
-use thiserror::Error;
 
 pub use http::{HeaderMap, HeaderName, Method};
 pub use url::Url;
 
-#[derive(Error, Debug)]
-pub enum Error {
-  #[cfg(not(target_arch = "wasm32"))]
-  #[error("{0}")]
-  FetcherError(#[from] reqwest::Error),
-  #[cfg(target_arch = "wasm32")]
-  #[error("{0}")]
-  FetcherError(String),
-}
+#[cfg(not(target_arch = "wasm32"))]
+pub use reqwest::Error as FetcherError;
+
+#[cfg(target_arch = "wasm32")]
+pub struct FetcherError(String);
 
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen::prelude::wasm_bindgen]
@@ -37,7 +32,7 @@ impl From<Error> for wasm_bindgen::JsValue {
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-pub async fn fetch(request: Request) -> Result<Response, Error> {
+pub async fn fetch(request: Request) -> Result<Response, FetcherError> {
   use reqwest::{redirect::Policy, Client};
 
   let client = if !request.follow {
@@ -67,17 +62,17 @@ pub async fn fetch(request: Request) -> Result<Response, Error> {
 }
 
 #[cfg(target_arch = "wasm32")]
-pub async fn fetch(request: Request, fetcher: &js_sys::Function) -> Result<Response, Error> {
+pub async fn fetch(request: Request, fetcher: &js_sys::Function) -> Result<Response, FetcherError> {
   use js_sys::Promise;
   use std::str::FromStr;
   use wasm_bindgen::JsValue;
   use wasm_bindgen_futures::JsFuture;
 
   let request =
-    serde_wasm_bindgen::to_value(&request).map_err(|err| Error::FetcherError(err.to_string()))?;
+    serde_wasm_bindgen::to_value(&request).map_err(|err| FetcherError(err.to_string()))?;
 
   let response = Promise::from(fetcher.call1(&JsValue::NULL, &request).map_err(|err| {
-    Error::FetcherError(
+    FetcherError(
       err
         .as_string()
         .unwrap_or("error calling the fetcher".into()),
@@ -85,7 +80,7 @@ pub async fn fetch(request: Request, fetcher: &js_sys::Function) -> Result<Respo
   })?);
 
   let response = JsFuture::from(response).await.map_err(|err| {
-    Error::FetcherError(
+    FetcherError(
       err
         .as_string()
         .unwrap_or("error during the fetcher promise".into()),
@@ -93,7 +88,7 @@ pub async fn fetch(request: Request, fetcher: &js_sys::Function) -> Result<Respo
   })?;
 
   let response = serde_wasm_bindgen::from_value::<ResponseWasm>(response)
-    .map_err(|err| Error::FetcherError(err.to_string()))?;
+    .map_err(|err| FetcherError(err.to_string()))?;
 
   let mut headers = HeaderMap::new();
 

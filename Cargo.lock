@@ -572,7 +572,6 @@ dependencies = [
  "serde",
  "serde-wasm-bindgen",
  "serde_bytes",
- "thiserror",
  "url",
  "wasm-bindgen",
  "wasm-bindgen-futures",

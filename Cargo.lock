@@ -572,6 +572,7 @@ dependencies = [
  "serde",
  "serde-wasm-bindgen",
  "serde_bytes",
+ "thiserror",
  "url",
  "wasm-bindgen",
  "wasm-bindgen-futures",
@@ -583,6 +584,7 @@ version = "0.1.7"
 dependencies = [
  "convert_case",
  "js-sys",
+ "literateink-fetcher",
  "proc-macro2",
  "quote",
  "syn",

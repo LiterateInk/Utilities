@@ -1,6 +1,3 @@
-#[cfg(target_arch = "wasm32")]
-use serde::{Deserialize, Serialize, Serializer};
-
 pub use http::{HeaderMap, HeaderName, Method};
 pub use url::Url;
 
@@ -8,26 +5,33 @@ pub use url::Url;
 pub use reqwest::Error as FetcherError;
 
 #[cfg(target_arch = "wasm32")]
-pub struct FetcherError(String);
+use serde::{Deserialize, Serialize, Serializer};
 
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen::prelude::wasm_bindgen]
 extern "C" {
-  #[wasm_bindgen(js_namespace = liUtilsFetcher)]
-  type FetcherError;
+  #[wasm_bindgen(js_namespace = liUtilsFetcher, js_name = FetcherError)]
+  type JsFetcherError;
 
-  #[wasm_bindgen(constructor, js_namespace = liUtilsFetcher)]
-  fn new(message: &str) -> FetcherError;
+  #[wasm_bindgen(constructor, js_namespace = liUtilsFetcher, js_name = FetcherError)]
+  fn new(message: &str) -> JsFetcherError;
 }
 
 #[cfg(target_arch = "wasm32")]
-impl From<Error> for wasm_bindgen::JsValue {
-  fn from(error: Error) -> Self {
-    let error_msg = error.to_string();
+#[derive(thiserror::Error, Debug)]
+pub struct FetcherError(String);
 
-    match error {
-      Error::FetcherError() => FetcherError::new(&error_msg).into(),
-    }
+#[cfg(target_arch = "wasm32")]
+impl std::fmt::Display for FetcherError {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    write!(f, "{}", self.0)
+  }
+}
+
+#[cfg(target_arch = "wasm32")]
+impl From<FetcherError> for wasm_bindgen::JsValue {
+  fn from(error: FetcherError) -> Self {
+    JsFetcherError::new(&error.0).into()
   }
 }
 

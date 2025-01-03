@@ -184,33 +184,43 @@ pub fn derive_wasm_error(input: TokenStream) -> TokenStream {
     _ => panic!("#[derive(Error)] is only valid for enums"),
   };
 
-  let extern_block = data_enum.variants.iter().map(|variant| {
-    let variant_ident = &variant.ident;
-    quote! {
-      #[wasm_bindgen::prelude::wasm_bindgen]
-      extern "C" {
-        #[wasm_bindgen(js_namespace = exports)]
-        type #variant_ident;
+  let extern_block = data_enum
+    .variants
+    .iter()
+    .filter(|variant| variant.ident != "FetcherError")
+    .map(|variant| {
+      let variant_ident = &variant.ident;
+      quote! {
+        #[wasm_bindgen::prelude::wasm_bindgen]
+        extern "C" {
+          #[wasm_bindgen(js_namespace = exports)]
+          type #variant_ident;
 
-        #[wasm_bindgen(constructor, js_namespace = exports)]
-        fn new(message: &str) -> #variant_ident;
+          #[wasm_bindgen(constructor, js_namespace = exports)]
+          fn new(message: &str) -> #variant_ident;
+        }
       }
-    }
-  });
+    });
 
   let match_arms = data_enum.variants.iter().map(|variant| {
     let variant_ident = &variant.ident;
 
-    // adjust pattern based on the variant’s fields
-    let pattern = match &variant.fields {
-      syn::Fields::Named(_) => quote! { #name::#variant_ident { .. } },
-      syn::Fields::Unnamed(_) => quote! { #name::#variant_ident(..) },
-      syn::Fields::Unit => quote! { #name::#variant_ident },
-    };
+    if variant.ident == "FetcherError" {
+      quote! {
+        #name::FetcherError(error) => error.into()
+      }
+    } else {
+      // adjust pattern based on the variant’s fields
+      let pattern = match &variant.fields {
+        syn::Fields::Named(_) => quote! { #name::#variant_ident { .. } },
+        syn::Fields::Unnamed(_) => quote! { #name::#variant_ident(..) },
+        syn::Fields::Unit => quote! { #name::#variant_ident },
+      };
 
-    quote! {
-      #pattern => {
-        #variant_ident::new(&error_msg).into()
+      quote! {
+        #pattern => {
+          #variant_ident::new(&error_msg).into()
+        }
       }
     }
   });

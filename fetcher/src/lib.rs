@@ -1,35 +1,39 @@
+use serde::{Deserialize, Serialize, Serializer};
 use std::str::FromStr;
-use serde::{Serialize, Deserialize, Serializer};
 
-pub use http::{Method, HeaderName, HeaderMap};
+pub use http::{HeaderMap, HeaderName, Method};
 pub use url::Url;
 
 #[cfg(not(target_arch = "wasm32"))]
-pub async fn fetch (request: Request) -> Response {
-  use reqwest::{Client, redirect::Policy};
+pub async fn fetch(request: Request) -> Response {
+  use reqwest::{redirect::Policy, Client};
 
   let client = if !request.follow {
-    Client::builder()
-      .redirect(Policy::none())
-      .build().unwrap()
-  }
-  else {
+    Client::builder().redirect(Policy::none()).build().unwrap()
+  } else {
     Client::new()
   };
 
-  let response = client.request(request.method, request.url)
+  let response = client
+    .request(request.method, request.url)
     .headers(request.headers)
     .body(request.body.unwrap_or_default())
-    .send().await.unwrap();
+    .send()
+    .await
+    .unwrap();
 
   let status = response.status().as_u16();
 
-  let headers = response.headers().iter().map(|(key, value)| {
-    let key = key.as_str().to_string();
-    let value = value.to_str().unwrap_or_default().to_string();
+  let headers = response
+    .headers()
+    .iter()
+    .map(|(key, value)| {
+      let key = key.as_str().to_string();
+      let value = value.to_str().unwrap_or_default().to_string();
 
-    (key, value)
-  }).collect();
+      (key, value)
+    })
+    .collect();
 
   let bytes = response.bytes().await.unwrap();
   let bytes = bytes.to_vec();
@@ -42,10 +46,10 @@ pub async fn fetch (request: Request) -> Response {
 }
 
 #[cfg(target_arch = "wasm32")]
-pub async fn fetch (request: Request, fetcher: &js_sys::Function) -> Response {
-  use wasm_bindgen_futures::JsFuture;
-  use wasm_bindgen::JsValue;
+pub async fn fetch(request: Request, fetcher: &js_sys::Function) -> Response {
   use js_sys::Promise;
+  use wasm_bindgen::JsValue;
+  use wasm_bindgen_futures::JsFuture;
 
   let request = serde_wasm_bindgen::to_value(&request).unwrap();
   let response = Promise::from(fetcher.call1(&JsValue::NULL, &request).unwrap());
@@ -63,16 +67,26 @@ pub struct Request {
 }
 
 impl Serialize for Request {
-  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: Serializer,
+  {
     use serde::ser::SerializeStruct;
 
     let mut state = serializer.serialize_struct("Request", 4)?;
     state.serialize_field("url", &self.url.as_str())?;
     state.serialize_field("method", &self.method.as_str())?;
 
-    let headers: Vec<(String, String)> = self.headers.iter().map(|(key, value)| {
-      (key.as_str().to_string(), value.to_str().unwrap_or_default().to_string())
-    }).collect();
+    let headers: Vec<(String, String)> = self
+      .headers
+      .iter()
+      .map(|(key, value)| {
+        (
+          key.as_str().to_string(),
+          value.to_str().unwrap_or_default().to_string(),
+        )
+      })
+      .collect();
 
     state.serialize_field("headers", &headers)?;
 

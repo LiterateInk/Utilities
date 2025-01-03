@@ -1,9 +1,9 @@
 extern crate proc_macro;
 
-use syn::{parse_macro_input, parse_quote, Attribute, DeriveInput, FnArg, ItemFn};
 use convert_case::{Case, Casing};
 use proc_macro::TokenStream;
 use quote::quote;
+use syn::{parse_macro_input, parse_quote, Attribute, DeriveInput, FnArg, ItemFn};
 
 /// This macro adds the `#[wasm_bindgen]` attribute.
 ///
@@ -74,7 +74,8 @@ pub fn export(_args: TokenStream, input: TokenStream) -> TokenStream {
       let name = sig.ident.to_string();
       let camel_case_name = name.to_case(Case::Camel);
 
-      let wasm_bindgen_attr: Attribute = parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen(js_name = #camel_case_name)]);
+      let wasm_bindgen_attr: Attribute =
+        parse_quote!(#[wasm_bindgen::prelude::wasm_bindgen(js_name = #camel_case_name)]);
       attrs.push(wasm_bindgen_attr);
 
       let output = quote! {
@@ -85,7 +86,7 @@ pub fn export(_args: TokenStream, input: TokenStream) -> TokenStream {
       };
 
       TokenStream::from(output)
-    },
+    }
     syn::Item::Struct(mut input) => {
       let vis = &input.vis;
       let ident = &input.ident;
@@ -101,7 +102,7 @@ pub fn export(_args: TokenStream, input: TokenStream) -> TokenStream {
       };
 
       TokenStream::from(output)
-    },
+    }
     syn::Item::Enum(mut input) => {
       let vis = &input.vis;
       let ident = &input.ident;
@@ -119,7 +120,7 @@ pub fn export(_args: TokenStream, input: TokenStream) -> TokenStream {
       };
 
       TokenStream::from(output)
-    },
+    }
     syn::Item::Impl(mut input) => {
       let attrs = &mut input.attrs;
       let self_ty = &input.self_ty;
@@ -136,7 +137,7 @@ pub fn export(_args: TokenStream, input: TokenStream) -> TokenStream {
       };
 
       TokenStream::from(output)
-    },
+    }
     _ => panic!("Only functions, structs, enums and impls are supported"),
   }
 }

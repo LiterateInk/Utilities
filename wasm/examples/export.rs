@@ -2,13 +2,11 @@ use literateink_wasm as wasm;
 
 // the method will be renamed `retrieveCas` in the generated bindings
 #[wasm::export]
-pub fn retrieve_cas() {
-}
+pub fn retrieve_cas() {}
 
 // the method will be still called `update` in the generated bindings
 #[wasm::export]
-pub fn update() {
-}
+pub fn update() {}
 
 #[wasm::export]
 pub enum SomeEnum {
@@ -47,7 +45,7 @@ impl Session {
 }
 
 impl Session {
-  pub fn fetcher (&self) -> &js_sys::Function {
+  pub fn fetcher(&self) -> &js_sys::Function {
     &self.fetcher
   }
 }

@@ -83,3 +83,10 @@ export const defaultFetcher: Fetcher = async (req) => {
     bytes
   };
 };
+
+export class FetcherError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "FetcherError";
+  }
+}

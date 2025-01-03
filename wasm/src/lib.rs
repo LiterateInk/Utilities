@@ -179,10 +179,51 @@ pub fn derive_wasm_error(input: TokenStream) -> TokenStream {
   let input = parse_macro_input!(input as DeriveInput);
   let name = &input.ident;
 
+  let data_enum = match &input.data {
+    syn::Data::Enum(data_enum) => data_enum,
+    _ => panic!("#[derive(Error)] is only valid for enums"),
+  };
+
+  let extern_block = data_enum.variants.iter().map(|variant| {
+    let variant_ident = &variant.ident;
+    quote! {
+      #[wasm_bindgen::prelude::wasm_bindgen]
+      extern "C" {
+        #[wasm_bindgen(js_namespace = exports)]
+        type #variant_ident;
+
+        #[wasm_bindgen(constructor, js_namespace = exports)]
+        fn new(message: &str) -> #variant_ident;
+      }
+    }
+  });
+
+  let match_arms = data_enum.variants.iter().map(|variant| {
+    let variant_ident = &variant.ident;
+
+    // adjust pattern based on the variant’s fields
+    let pattern = match &variant.fields {
+      syn::Fields::Named(_) => quote! { #name::#variant_ident { .. } },
+      syn::Fields::Unnamed(_) => quote! { #name::#variant_ident(..) },
+      syn::Fields::Unit => quote! { #name::#variant_ident },
+    };
+
+    quote! {
+      #pattern => {
+        #variant_ident::new(&error_msg).into()
+      }
+    }
+  });
+
   let expanded = quote! {
+    #( #extern_block )*
+
     impl From<#name> for wasm_bindgen::JsValue {
       fn from(error: #name) -> Self {
-        js_sys::Error::new(&error.to_string()).into()
+        let error_msg = error.to_string();
+        match error {
+          #( #match_arms ),*
+        }
       }
     }
   };

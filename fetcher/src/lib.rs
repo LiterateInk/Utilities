@@ -97,7 +97,7 @@ pub async fn fetch(request: Request, fetcher: &js_sys::Function) -> Result<Respo
     let key = HeaderName::from_str(key.as_str()).unwrap();
     let value = value.parse().unwrap();
 
-    headers.insert(key, value);
+    headers.append(key, value);
   }
 
   Ok(Response {
